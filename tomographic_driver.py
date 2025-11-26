@@ -26,8 +26,8 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 time_ = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
 parser = argparse.ArgumentParser()
 parser.add_argument('--cluster', type=int, default=0)
-parser.add_argument('--datapath', type=str, default='/amedmnist')
-parser.add_argument('--savepath', type=str, default='/checkpoints')
+parser.add_argument('--datapath', type=str, default='/content/DRIP/amedmnist')
+parser.add_argument('--savepath', type=str, default='/content/DRIP/checkpoints')
 parser.add_argument('--regnet', type=str, default='pgd')  # can be 'LA', 'resnet', 'unet' or 'pgd'
 parser.add_argument('--channels', type=int, default=64)
 parser.add_argument('--layers', type=int, default=5)
@@ -42,7 +42,7 @@ args = parser.parse_args()
 exp_name = args.task + '_stl10_' + args.regnet + '_layers_' + str(args.layers) + '_chan_' + str(
     args.channels) + '_cglsIter_' + str(
     args.cglsIter) + '_netIter_' + str(args.solveIter) + time_
-wandb.init(config=args, entity='username', name=exp_name)
+wandb.init(config=args, entity='akberovaash-university-of-stavanger', project='DRIP-repro', name=exp_name)
 config = wandb.config
 
 if not os.path.exists(args.savepath):
