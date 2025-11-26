@@ -40,7 +40,7 @@ args = parser.parse_args()
 exp_name = args.task + '_stl10_' + args.regnet + '_layers_' + str(args.layers) + '_chan_' + str(
     args.channels) + '_cglsIter_' + str(
     args.cglsIter) + '_netIter_' + str(args.solveIter) + time_
-wandb.init(config=args, entity='username', name=exp_name)
+wandb.init(config=args, entity='akberovaash-university-of-stavanger', project='DRIP-repro', name=exp_name)
 config = wandb.config
 
 if not os.path.exists(args.savepath):
