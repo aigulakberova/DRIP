@@ -2,7 +2,7 @@ import os, sys
 import torch
 # torch.set_default_tensor_type(torch.DoubleTensor)
 import os
-os.environ["WANDB_DISABLED"] = "true"
+os.environ["WANDB_DISABLED"] = "offline"
 
 import os
 
@@ -46,6 +46,16 @@ parser.add_argument('--cglsIter', type=int, default=16)
 parser.add_argument('--solveIter', type=int, default=1)
 
 args = parser.parse_args()
+
+args.datapath = os.path.abspath(args.datapath)
+args.savepath = os.path.abspath(args.savepath)
+
+os.makedirs(args.datapath, exist_ok=True)
+os.makedirs(args.savepath, exist_ok=True)
+
+print("datapath =", args.datapath, "exists:", os.path.isdir(args.datapath))
+print("savepath =", args.savepath, "exists:", os.path.isdir(args.savepath))
+
 exp_name = args.task + '_stl10_' + args.regnet + '_layers_' + str(args.layers) + '_chan_' + str(
     args.channels) + '_cglsIter_' + str(
     args.cglsIter) + '_netIter_' + str(args.solveIter) + time_
@@ -124,8 +134,7 @@ else:
     net = (networks.inerseSolveNet(regNet, dataProj, forOp, niter=args.solveIter))
 
 if args.cluster:
-    if not os.path.exists(args.savepath):
-        os.mkdir(args.savepath)
+
     log_filename = os.path.join(args.savepath, exp_name + '.txt')
     sys.stdout = open(log_filename, "w")
     sys.stderr = sys.stdout
