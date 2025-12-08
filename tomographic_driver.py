@@ -2,12 +2,16 @@ import os, sys
 import torch
 # torch.set_default_tensor_type(torch.DoubleTensor)
 import os
-os.environ["WANDB_DISABLED"] = "offline"
+os.environ["WANDB_DISABLED"] = "true"
 
 import os
 
 default_data = os.path.join(os.getcwd(), "data")
 default_save = os.path.join(os.getcwd(), "checkpoints")
+
+
+from torch.cuda.amp import autocast, GradScaler
+scaler = GradScaler()
 
 import numpy as np
 import scipy as sp
@@ -38,11 +42,11 @@ parser.add_argument('--savepath', type=str, default=default_save)
 parser.add_argument('--regnet', type=str, default='LA')  # can be 'LA', 'resnet', 'unet' or 'pgd'
 parser.add_argument('--channels', type=int, default=64)
 parser.add_argument('--layers', type=int, default=5)
-parser.add_argument('--batch_size', type=int, default=16)
+parser.add_argument('--batch_size', type=int, default=64) # changed from 16
 parser.add_argument('--task', type=str, default='radon')  # can be deblur, radon, mask
 parser.add_argument('--lr', type=float, default=1e-4)
 parser.add_argument('--wd', type=float, default=1e-5)
-parser.add_argument('--cglsIter', type=int, default=16)
+parser.add_argument('--cglsIter', type=int, default=8)
 parser.add_argument('--solveIter', type=int, default=1)
 
 args = parser.parse_args()
@@ -74,13 +78,14 @@ random.seed(0)
 #####
 
 path = args.datapath
-num_workers = 6 if args.cluster else 0
+#num_workers = 6 if args.cluster else 0
+num_workers = 2
 train_data = OrganCMNIST(root=path, split="train", download=True, transform=torchvision.transforms.Compose(
     [torchvision.transforms.ToTensor(), torchvision.transforms.Resize(size=96)]))
-train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=True, num_workers=num_workers)
+train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
 test_data = OrganCMNIST(root=path, split="train", download=True, transform=torchvision.transforms.Compose(
     [torchvision.transforms.ToTensor(), torchvision.transforms.Resize(size=96)]))
-test_loader = DataLoader(test_data, batch_size=32, shuffle=False, num_workers=num_workers)
+test_loader = DataLoader(test_data, batch_size=32, shuffle=False, num_workers=num_workers, pin_memory=True)
 
 learnEmb = False
 if args.regnet == 'resnet':
@@ -229,7 +234,7 @@ for j in range(epochs):
         optimizer.step()
         avhist += torch.sqrt(loss)
         fithist += torch.sqrt(lossD)
-        if batch_idx % 10 == 9:
+        if batch_idx % 50 == 49:
             print('epoch = %3d   batch_idx = %d    loss = %3.2e    lossD = %3.2e    datafit= %3.2e    eps = %3.2e' % (
                 j, batch_idx, loss, lossD, train_residual, eps),
                   flush=True)
