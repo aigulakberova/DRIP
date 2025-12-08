@@ -1,7 +1,8 @@
 import os, sys
 import torch
 # torch.set_default_tensor_type(torch.DoubleTensor)
-
+import os
+os.environ["WANDB_DISABLED"] = "true"
 import numpy as np
 import scipy as sp
 import scipy.sparse as sparse
