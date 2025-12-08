@@ -3,6 +3,12 @@ import torch
 # torch.set_default_tensor_type(torch.DoubleTensor)
 import os
 os.environ["WANDB_DISABLED"] = "true"
+
+import os
+
+default_data = os.path.join(os.getcwd(), "data")
+default_save = os.path.join(os.getcwd(), "checkpoints")
+
 import numpy as np
 import scipy as sp
 import scipy.sparse as sparse
@@ -27,8 +33,8 @@ device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 time_ = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
 parser = argparse.ArgumentParser()
 parser.add_argument('--cluster', type=int, default=0)
-parser.add_argument('--datapath', type=str, default='/content/DRIP/amedmnist')
-parser.add_argument('--savepath', type=str, default='/content/DRIP/checkpoints')
+parser.add_argument('--datapath', type=str, default=default_data)
+parser.add_argument('--savepath', type=str, default=default_save)
 parser.add_argument('--regnet', type=str, default='LA')  # can be 'LA', 'resnet', 'unet' or 'pgd'
 parser.add_argument('--channels', type=int, default=64)
 parser.add_argument('--layers', type=int, default=5)
