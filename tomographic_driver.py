@@ -2,7 +2,7 @@ import os, sys
 import torch
 # torch.set_default_tensor_type(torch.DoubleTensor)
 import os
-os.environ["WANDB_DISABLED"] = "true"
+#os.environ["WANDB_DISABLED"] = "true"
 
 import os
 
