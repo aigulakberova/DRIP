@@ -28,7 +28,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--cluster', type=int, default=0)
 parser.add_argument('--datapath', type=str, default='/content/DRIP/amedmnist')
 parser.add_argument('--savepath', type=str, default='/content/DRIP/checkpoints')
-parser.add_argument('--regnet', type=str, default='pgd')  # can be 'LA', 'resnet', 'unet' or 'pgd'
+parser.add_argument('--regnet', type=str, default='LA')  # can be 'LA', 'resnet', 'unet' or 'pgd'
 parser.add_argument('--channels', type=int, default=64)
 parser.add_argument('--layers', type=int, default=5)
 parser.add_argument('--batch_size', type=int, default=16)
