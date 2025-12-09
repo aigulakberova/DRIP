@@ -267,4 +267,52 @@ for j in range(epochs):
     }
     wandb.log(metrics)
 
+# ===== Visualization: Data vs LA-Net for a few test samples =====
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    net.eval()
+    with torch.no_grad():
+        # one batch from test_loader
+        img, lbl = next(iter(test_loader))
+        img = img.to(device)
+
+        # If you're using OrganCMNIST (1 channel) like in your medmnist script,
+        # uncomment this:
+        # img = torch.cat([img, img, img], dim=1)
+
+        ftrue = img
+        # forward operator: data (Radon projections / blurred / masked)
+        dtrue = net.forOp(ftrue, emb=False)
+
+        # reconstruction with trained net (no extra noise)
+        Dn = dtrue
+        X, Xref, R = net(Dn)
+
+    # Plot first N examples
+    n_show = min(6, img.shape[0])
+    fig, axes = plt.subplots(2, n_show, figsize=(2 * n_show, 4))
+
+    for i in range(n_show):
+        # --- Data row (top) ---
+        data_i = dtrue[i].detach().cpu()
+        # If Radon: (3, 18, 139) -> show first channel
+        data_img = data_i[0].numpy()
+        axes[0, i].imshow(data_img, cmap='gray')
+        axes[0, i].axis('off')
+
+        # --- LA-Net recon row (bottom) ---
+        rec_i = X[i].detach().cpu()
+        rec_img = np.transpose(rec_i.numpy(), (1, 2, 0))  # (C,H,W)->(H,W,C)
+        rec_img = np.clip(rec_img, 0, 1)
+        axes[1, i].imshow(rec_img)
+        axes[1, i].axis('off')
+
+    axes[0, 0].set_ylabel("Data", fontsize=12)
+    axes[1, 0].set_ylabel("LA-Net", fontsize=12)
+    plt.tight_layout()
+    plt.savefig("lanet_radon_examples.png", dpi=150)
+    plt.close()
+    # ===== end visualization =====
+
 print('done')
