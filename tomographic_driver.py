@@ -274,17 +274,17 @@ for j in range(epochs):
     net.eval()
     with torch.no_grad():
         # one batch from test_loader
+
         img, lbl = next(iter(test_loader))
         img = img.to(device)
-
-        # If you're using OrganCMNIST (1 channel) like in your medmnist script,
-        # uncomment this:
-        # img = torch.cat([img, img, img], dim=1)
-
+        
+        # If images are 1-channel, repeat them to 3 channels
+        if img.shape[1] == 1:
+            img = img.repeat(1, 3, 1, 1)  # (B,1,H,W) -> (B,3,H,W)
+        
         ftrue = img
-        # forward operator: data (Radon projections / blurred / masked)
         dtrue = net.forOp(ftrue, emb=False)
-
+       
         # reconstruction with trained net (no extra noise)
         Dn = dtrue
         X, Xref, R = net(Dn)
