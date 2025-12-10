@@ -158,7 +158,7 @@ print("args:", args, flush=True)
 net.to(device)
 
 optimizer = optim.Adam([{'params': net.parameters()}], lr=args.lr, weight_decay=args.wd)
-epochs = 50
+epochs = 2
 hist = torch.zeros(epochs, device=device)
 
 
