@@ -158,7 +158,7 @@ print("args:", args, flush=True)
 net.to(device)
 
 optimizer = optim.Adam([{'params': net.parameters()}], lr=args.lr, weight_decay=args.wd)
-epochs = 2
+epochs = 80
 hist = torch.zeros(epochs, device=device)
 
 
@@ -298,7 +298,7 @@ for j in range(epochs):
         data_i = dtrue[i].detach().cpu()
         # If Radon: (3, 18, 139) -> show first channel
         data_img = data_i[0].numpy()
-        axes[0, i].imshow(data_img, cmap='gray')
+        axes[0, i].imshow(data_img, cmap='gray', aspect='auto')
         axes[0, i].axis('off')
 
         # --- LA-Net recon row (bottom) ---
