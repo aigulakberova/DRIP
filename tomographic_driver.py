@@ -312,6 +312,7 @@ for j in range(epochs):
     axes[1, 0].set_ylabel("LA-Net", fontsize=12)
     plt.tight_layout()
     plt.savefig("lanet_radon_examples_80.png", dpi=150)
+    plt.savefig('/content/drive/MyDrive/lanet_radon_examples_80.png', dpi=300, bbox_inches='tight')
     plt.close()
     # ===== end visualization =====
 
